@@ -1,11 +1,16 @@
 import { questionInt } from "readline-sync";
+import { registerProduct } from "./forms/ProductRegistrationForm";
+import { loginUser } from "./forms/LoginForm";
+import { registerUser } from "./forms/UserRegistrationForm";
+import { editProfile } from "./forms/EditProfileForm";
+import { buyItem } from "./forms/BuyItemForm";
 
 const menuOptions: string[] = [
     "Login",
     "Register",
     "Buy Item",
     "Sell Item",
-    "View Profile",
+    "Edit Profile",
     "Logout"
 ];
 
@@ -32,21 +37,33 @@ const userChoice = displayMenu(menuOptions);
 switch (userChoice) {
     case 1:
         console.log("You selected Login.");
+
+        loginUser();
         break;
     case 2:
         console.log("You selected Register.");
+
+        registerUser();
         break;
     case 3:
         console.log("You selected Buy Item.");
+
+        buyItem();
         break;
     case 4:
         console.log("You selected Sell Item.");
+
+        registerProduct();
         break;
     case 5:
-        console.log("You selected View Profile.");
+        console.log("You selected Edit Profile.");
+
+        editProfile();
         break;
     case 6:
         console.log("You selected Logout.");
+
+        // call the controller function to handle user logout here
         break;
     default:
         console.log("Invalid selection.");
