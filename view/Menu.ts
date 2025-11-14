@@ -94,7 +94,6 @@ export class Menu {
             console.log(`Price: R$ ${product.price.toFixed(2)}`);
             console.log(`Quantity: ${product.quantity}`);
             console.log(`Type: ${product.type}`);
-            console.log(`Seller ID: ${product.userId}`);
             console.log("------------------------");
         });
     }
