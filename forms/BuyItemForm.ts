@@ -19,7 +19,6 @@ export class BuyItemForm {
         console.log("\n=== BUY ITEM FORM ===");
 
         try {
-            // Solicitar dados da compra
             const productId: number = questionInt("Enter the Product ID to purchase: ");
             const quantity: number = questionInt("Enter quantity to purchase: ");
             

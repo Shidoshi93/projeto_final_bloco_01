@@ -1,28 +1,32 @@
-import { question } from "readline-sync";
-
-export interface User {
-    username: string;
-    password: string;
-    email: string;
-    id?: number;
-}
+import { question, } from "readline-sync";
+import { User } from "../model/User";
 
 export class UserRegistrationForm {
-    public static registerUser(): User {
+    public static registerUser(): User | null {
         console.log("User Registration");
 
         const username: string = question("Enter username: ");
-        const password: string = question("Enter password: ");
+        if (!username || username.trim() === "") {
+            console.log("Username is required.");
+            return null;
+        }
+
+        const password: string = ("Enter password: ");
+        if (!password || password.trim() === "") {
+            console.log("Password is required.", {
+                hideEchoBack: true
+            });
+            return null;
+        }
+
         const email: string = question("Enter email: ");
+        if (!email || email.trim() === "") {
+            console.log("Email is required.");
+            return null;
+        }
 
-        const newUser: User = {
-            username,
-            password,
-            email,
-            id: Date.now() // Simple unique ID based on timestamp
-        };
+        const newUser: User = new User(username.trim(), password.trim(), email.trim(), false);
 
-        console.log("User registered successfully!");
         return newUser;
     }
 }

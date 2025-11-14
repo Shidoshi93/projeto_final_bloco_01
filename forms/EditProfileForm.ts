@@ -1,10 +1,5 @@
 import { question } from "readline-sync";
-
-export interface User {
-    username: string;
-    password: string;
-    email: string;
-}
+import { User } from "../model/User";
 
 export class EditProfileForm {
     public static editProfile(): User {
@@ -14,13 +9,8 @@ export class EditProfileForm {
         const password: string = question("Enter new password: ");
         const email: string = question("Enter new email: ");
 
-        const updatedUser: User = {
-            username,
-            password,
-            email
-        };
+        const updatedUser: User = new User(username, password, email, false);
 
-        console.log("Profile updated successfully!");
         return updatedUser;
     }
 }

@@ -1,3 +1,4 @@
+import { User } from "../model/User";
 import { UserService } from "../service/UserService";
 
 export class UserController {
@@ -11,12 +12,12 @@ export class UserController {
         return this.userService.loginUser(username, password);
     }
 
-    public register(username: string, password: string, email: string): boolean {
-        return this.userService.registerUser(username, password, email);
+    public register(user: User): boolean {
+        return this.userService.registerUser(user);
     }
 
-    public editProfile(username: string, password: string, email: string): boolean {
-        return this.userService.editProfile(username, password, email);
+    public editProfile(user: User): boolean {
+        return this.userService.editProfile(user);
     }
 
     public deleteUser(username: string): boolean {
