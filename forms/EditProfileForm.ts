@@ -6,19 +6,21 @@ export interface User {
     email: string;
 }
 
-export function editProfile(): User {
-    console.log("Edit User Profile Form");
+export class EditProfileForm {
+    public editProfile(): User {
+        console.log("Edit User Profile Form");
 
-    const username: string = question("Enter new username: ");
-    const password: string = question("Enter new password: ");
-    const email: string = question("Enter new email: ");
+        const username: string = question("Enter new username: ");
+        const password: string = question("Enter new password: ");
+        const email: string = question("Enter new email: ");
 
-    const updatedUser: User = {
-        username,
-        password,
-        email
-    };
+        const updatedUser: User = {
+            username,
+            password,
+            email
+        };
 
-    console.log("Profile updated successfully!");
-    return updatedUser;
+        console.log("Profile updated successfully!");
+        return updatedUser;
+    }
 }
