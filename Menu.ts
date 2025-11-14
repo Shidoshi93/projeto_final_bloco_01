@@ -1,9 +1,9 @@
 import { questionInt } from "readline-sync";
-import { registerProduct } from "./forms/ProductRegistrationForm";
-import { loginUser } from "./forms/LoginForm";
-import { registerUser } from "./forms/UserRegistrationForm";
-import { editProfile } from "./forms/EditProfileForm";
-import { buyItem } from "./forms/BuyItemForm";
+import { LoginForm } from "./forms/LoginForm";
+import { UserRegistrationForm } from "./forms/UserRegistrationForm";
+import { BuyItemForm } from "./forms/BuyItemForm";
+import { ProductRegistrationForm } from "./forms/ProductRegistrationForm";
+import { EditProfileForm } from "./forms/EditProfileForm";
 
 const menuOptions: string[] = [
     "Login",
@@ -38,27 +38,27 @@ switch (userChoice) {
     case 1:
         console.log("You selected Login.");
 
-        loginUser();
+        LoginForm.loginUser();
         break;
     case 2:
         console.log("You selected Register.");
 
-        registerUser();
+        UserRegistrationForm.registerUser();
         break;
     case 3:
         console.log("You selected Buy Item.");
 
-        buyItem();
+        BuyItemForm.buyItem();
         break;
     case 4:
         console.log("You selected Sell Item.");
 
-        registerProduct();
+        ProductRegistrationForm.registerProduct();
         break;
     case 5:
         console.log("You selected Edit Profile.");
 
-        editProfile();
+        EditProfileForm.editProfile();
         break;
     case 6:
         console.log("You selected Logout.");
