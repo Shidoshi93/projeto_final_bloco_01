@@ -5,19 +5,21 @@ export interface LoginCredentials {
     password: string;
 }
 
-export function loginUser(): LoginCredentials {
-    console.log("User Login");
+export class LoginForm {
+    public loginUser(): LoginCredentials {
+        console.log("User Login");
 
-    const username: string = question("Enter username: ");
-    const password: string = question("Enter password: ");
+        const username: string = question("Enter username: ");
+        const password: string = question("Enter password: ");
 
-    const credentials: LoginCredentials = {
-        username,
-        password
-    };
+        const credentials: LoginCredentials = {
+            username,
+            password
+        };
 
-    // call the controller function to handle user login here
+        // call the controller function to handle user login here
 
-    console.log("Login successful!");
-    return credentials;
+        console.log("Login successful!");
+        return credentials;
+    }
 }
