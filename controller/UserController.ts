@@ -18,4 +18,12 @@ export class UserController {
     public editProfile(username: string, password: string, email: string): boolean {
         return this.userService.editProfile(username, password, email);
     }
+
+    public deleteUser(username: string): boolean {
+        return this.userService.deleteUser(username);
+    }
+
+    public addressUser(username: string, endereco: any): boolean {
+        return this.userService.addressUser(username, endereco);
+    }
 }
