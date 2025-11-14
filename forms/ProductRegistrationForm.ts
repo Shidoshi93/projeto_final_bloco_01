@@ -1,29 +1,23 @@
-import { question, questionInt, questionFloat } from "readline-sync";
-
-export interface Product {
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-}
+import { question, questionInt, questionFloat, keyInSelect } from "readline-sync";
+import { ProductInput } from "../types/Product";
 
 export class ProductRegistrationForm {
-    public static registerProduct(): Product {
+    public static registerProduct(): ProductInput {
         console.log("Register a New Product");
 
         const name: string = question("Enter product name: ");
         const description: string = question("Enter product description: ");
         const price: number = questionFloat("Enter product price: ");
         const quantity: number = questionInt("Enter product quantity: ");
+        const userId: number = questionInt("Enter user ID: ");
 
-        const newProduct: Product = {
+        const newProduct: ProductInput = {
             name,
             description,
             price,
-            quantity
+            quantity,
+            userId
         };
-
-        // call the controller function to handle product registration here
 
         console.log("Product registered successfully!");
         return newProduct;

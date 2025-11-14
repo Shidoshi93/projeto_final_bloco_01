@@ -1,14 +1,6 @@
 import { ProductInterface } from "../interfaces/ProductInterface";
+import { Product } from "../types/Product";
 import { mockProducts } from "../util/ProductsMock";
-
-type Product = {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    type: string;
-};
 
 export class ProductRepository implements ProductInterface {
     private products: Product[] = [...mockProducts];
