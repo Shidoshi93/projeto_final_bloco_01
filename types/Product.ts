@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductOutput = {
     id: number;
     name: string;
     description: string;
@@ -8,4 +8,4 @@ export type Product = {
     userId: number;
 };
 
-export type ProductInput = Omit<Product, 'id' | 'type'>;
+export type ProductInput = Omit<ProductOutput, 'id' | 'type'>;

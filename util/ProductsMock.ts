@@ -1,6 +1,6 @@
-import { Product } from "../types/Product";
+import { ProductOutput } from "../types/Product";
 
-export const mockProducts: Product[] = [
+export const mockProducts: ProductOutput[] = [
     {
         id: 1,
         name: "Bicicleta MTB Trek Marlin 7",

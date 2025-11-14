@@ -1,5 +1,5 @@
 import { ProductRepository } from "../repository/ProductRepository";
-import { Product } from "../types/Product";
+import { ProductOutput } from "../types/Product";
 
 export class ProductService {
     private productRepository: ProductRepository;
@@ -8,15 +8,15 @@ export class ProductService {
         this.productRepository = new ProductRepository();
     }
 
-    public addProduct(product: Product): void {
+    public addProduct(product: ProductOutput): void {
         this.productRepository.addProduct(product);
     }
 
-    public getProductById(id: number): Product | null {
+    public getProductById(id: number): ProductOutput | null {
         return this.productRepository.getProductById(id);
     }
 
-    public updateProduct(id: number, product: Product): void {
+    public updateProduct(id: number, product: ProductOutput): void {
         this.productRepository.updateProduct(id, product);
     }
 
@@ -24,7 +24,7 @@ export class ProductService {
         this.productRepository.deleteProduct(id);
     }
 
-    public listAllProducts(): Product[] {
+    public listAllProducts(): ProductOutput[] {
         return this.productRepository.listAllProducts();
     }
 }
