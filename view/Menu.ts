@@ -6,9 +6,13 @@ import { ProductRegistrationForm } from "../forms/ProductRegistrationForm";
 import { EditProfileForm } from "../forms/EditProfileForm";
 import { ProductController } from "../controller/ProductController";
 import { ProductService } from "../service/ProductService";
+import { UserController } from "../controller/UserController";
+import { UserService } from "../service/UserService";
+import { UserRepository } from "../repository/UserRepository";
 
 export class Menu {
     private static productController: ProductController = new ProductController(new ProductService());
+    private static userController: UserController = new UserController(new UserService(new UserRepository()));
 
     private static readonly menuOptions: string[] = [
         "Login",
@@ -42,11 +46,11 @@ export class Menu {
         switch (choice) {
             case 1:
                 console.log("You selected Login.");
-                LoginForm.loginUser();
+                Menu.handleLogin();
                 break;
             case 2:
                 console.log("You selected Register.");
-                UserRegistrationForm.registerUser();
+                Menu.handleUserRegistration();
                 break;
             case 3:
                 console.log("You selected List Products.");
@@ -66,15 +70,55 @@ export class Menu {
                 break;
             case 6:
                 console.log("You selected Edit Profile.");
-                EditProfileForm.editProfile();
+                Menu.handleEditProfile();
                 break;
             case 7:
                 console.log("You selected Logout.");
-                // call the controller function to handle user logout here
+                console.log("Logging out... Goodbye!");
                 break;
             default:
                 console.log("Invalid selection.");
                 break;
+        }
+    }
+
+    private static handleLogin(): void {
+        const credentials = LoginForm.loginUser();
+        if (credentials) {
+            const success = Menu.userController.login(credentials.username, credentials.password);
+            if (success) {
+                console.log("Login successful! Welcome back!");
+            } else {
+                console.log("Login failed. Invalid username or password.");
+            }
+        }
+    }
+
+    private static handleUserRegistration(): void {
+        const userData = UserRegistrationForm.registerUser();
+        if (userData) {
+            const success = Menu.userController.register(userData.username, userData.password, userData.email);
+            if (success) {
+                console.log("User registered successfully!");
+            } else {
+                console.log("Registration failed. Username or email already exists.");
+            }
+        }
+    }
+
+    private static handleEditProfile(): void {
+        const updatedUserData = EditProfileForm.editProfile();
+        if (updatedUserData) {
+            const success = Menu.userController.editProfile(
+                updatedUserData.username, 
+                updatedUserData.password, 
+                updatedUserData.email
+            );
+            if (success) {
+                console.log("Profile updated successfully!");
+            } else {
+                console.log("Profile update failed. User not found.");
+            }
         }
     }
 
