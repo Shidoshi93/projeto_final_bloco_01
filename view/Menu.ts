@@ -4,11 +4,16 @@ import { UserRegistrationForm } from "../forms/UserRegistrationForm";
 import { BuyItemForm } from "../forms/BuyItemForm";
 import { ProductRegistrationForm } from "../forms/ProductRegistrationForm";
 import { EditProfileForm } from "../forms/EditProfileForm";
+import { ProductController } from "../controller/ProductController";
+import { ProductService } from "../service/ProductService";
 
 export class Menu {
+    private static productController: ProductController = new ProductController(new ProductService());
+
     private static readonly menuOptions: string[] = [
         "Login",
         "Register",
+        "List Products",
         "Buy Item",
         "Sell Item",
         "Edit Profile",
@@ -44,18 +49,26 @@ export class Menu {
                 UserRegistrationForm.registerUser();
                 break;
             case 3:
+                console.log("You selected List Products.");
+                Menu.listAllProducts();
+                break;
+            case 4:
                 console.log("You selected Buy Item.");
                 BuyItemForm.buyItem();
                 break;
-            case 4:
-                console.log("You selected Sell Item.");
-                ProductRegistrationForm.registerProduct();
-                break;
             case 5:
+                console.log("You selected Sell Item.");
+                const newProduct = ProductRegistrationForm.registerProduct();
+                if (newProduct) {
+                    Menu.productController.createProduct(newProduct);
+                    console.log("Product successfully added to catalog!");
+                }
+                break;
+            case 6:
                 console.log("You selected Edit Profile.");
                 EditProfileForm.editProfile();
                 break;
-            case 6:
+            case 7:
                 console.log("You selected Logout.");
                 // call the controller function to handle user logout here
                 break;
@@ -63,6 +76,27 @@ export class Menu {
                 console.log("Invalid selection.");
                 break;
         }
+    }
+
+    private static listAllProducts(): void {
+        console.log("\n=== PRODUCT CATALOG ===");
+        const products = Menu.productController.listProducts();
+        
+        if (products.length === 0) {
+            console.log("No products available.");
+            return;
+        }
+
+        products.forEach((product: any) => {
+            console.log(`\nID: ${product.id}`);
+            console.log(`Name: ${product.name}`);
+            console.log(`Description: ${product.description}`);
+            console.log(`Price: R$ ${product.price.toFixed(2)}`);
+            console.log(`Quantity: ${product.quantity}`);
+            console.log(`Type: ${product.type}`);
+            console.log(`Seller ID: ${product.userId}`);
+            console.log("------------------------");
+        });
     }
 
     public static run(): void {
