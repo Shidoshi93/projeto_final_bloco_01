@@ -1,15 +1,19 @@
+import { Endereco } from "./Endereco";
+
 export class User {
     private username: string;
     private password: string;
     private email: string;
     private isSeller: boolean;
+    private endereco: Endereco | undefined;
 
-    constructor(username: string, password: string, email: string, isSeller: boolean
+    constructor(username: string, password: string, email: string, isSeller: boolean, endereco?: Endereco
     ) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.isSeller = isSeller;
+        this.endereco = endereco;
     }
 
     public getUsername(): string {
@@ -42,5 +46,13 @@ export class User {
 
     public setIsSeller(isSeller: boolean): void {
         this.isSeller = isSeller;
+    }
+
+    public getEndereco(): Endereco | undefined {
+        return this.endereco;
+    }
+
+    public setEndereco(endereco: Endereco): void {
+        this.endereco = endereco;
     }
 }
