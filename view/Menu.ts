@@ -106,8 +106,12 @@ export class Menu {
                 if (SessionManager.requireLogin()) {
                     const newProduct = ProductRegistrationForm.registerProduct();
                     if (newProduct) {
-                        Menu.productController.createProduct(newProduct);
-                        console.log("Product successfully added to catalog!");
+                        const result = Menu.productController.createProduct(newProduct);
+                        if (result.success) {
+                            console.log("Product successfully added to catalog!");
+                        } else {
+                            console.log(`Failed to create product: ${result.message}`);
+                        }
                     }
                 }
                 break;
@@ -193,11 +197,13 @@ export class Menu {
             return;
         }
 
-        const product = Menu.productController.getProduct(purchaseData.productId);
-        if (!product) {
-            console.log("Product not found.");
+        const productResult = Menu.productController.getProduct(purchaseData.productId);
+        if (!productResult.success || !productResult.product) {
+            console.log(`Product not found: ${productResult.message}`);
             return;
         }
+
+        const product = productResult.product;
 
         const total = Menu.purchaseController.calculateTotal(purchaseData.productId, purchaseData.quantity);
         if (total === null) {
@@ -302,7 +308,14 @@ export class Menu {
 
     private static listAllProducts(): void {
         console.log("\n=== PRODUCT CATALOG ===");
-        const products = Menu.productController.listProducts();
+        const result = Menu.productController.listProducts();
+        
+        if (!result.success) {
+            console.log(`Error retrieving products: ${result.message}`);
+            return;
+        }
+
+        const products = result.products;
         
         if (products.length === 0) {
             console.log("No products available.");
