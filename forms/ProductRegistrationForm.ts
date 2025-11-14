@@ -22,10 +22,8 @@ export function registerProduct(): Product {
         quantity
     };
 
+    // call the controller function to handle product registration here
+
     console.log("Product registered successfully!");
     return newProduct;
 }
-
-// Example usage
-const product = registerProduct();
-console.log("Registered Product:", product);
