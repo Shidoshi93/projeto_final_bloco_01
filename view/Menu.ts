@@ -30,28 +30,49 @@ export class Menu {
         "Buy Item",
         "Sell Item",
         "Edit Profile",
-        "Logout"
+        "Logout",
+        "Exit Application"
     ];
 
     public static displayMenu(options: string[]): number {
+        console.log("=== MAIN MENU ===");
         console.log("Please choose an option:");
+        console.log("┌─────────────────────────────────┐");
+        
         options.forEach((option, index) => {
-            console.log(`${index + 1}. ${option}`);
+            const emoji = Menu.getOptionEmoji(index + 1);
+            console.log(`│ ${emoji} ${index + 1}. ${option.padEnd(26)} │`);
         });
+        
+        console.log("└─────────────────────────────────┘");
 
         let choice: number;
         while (true) {
-            choice = questionInt("Enter the number of your choice: ");
+            choice = questionInt("👉 Enter your choice (1-" + options.length + "): ");
             if (choice >= 1 && choice <= options.length) {
                 break;
             }
-            console.log("Invalid choice. Please try again.");
+            console.log("Invalid choice. Please enter a number between 1 and " + options.length + ".");
         }
 
         return choice;
     }
 
-    public static handleMenuChoice(choice: number): void {
+    private static getOptionEmoji(choice: number): string {
+        const emojis = {
+            1: "🔐", // Login
+            2: "📝", // Register
+            3: "📦", // List Products
+            4: "🛒", // Buy Item
+            5: "💰", // Sell Item
+            6: "✏️",  // Edit Profile
+            7: "👋", // Logout
+            8: "🚪"  // Exit
+        };
+        return emojis[choice as keyof typeof emojis] || "📌";
+    }
+
+    public static handleMenuChoice(choice: number): boolean {
         switch (choice) {
             case 1:
                 console.log("You selected Login.");
@@ -85,10 +106,15 @@ export class Menu {
                 console.log("You selected Logout.");
                 console.log("Logging out... Goodbye!");
                 break;
+            case 8:
+                console.log("You selected Exit Application.");
+                console.log("Thank you for using our system! Goodbye!");
+                return false;
             default:
                 console.log("Invalid selection.");
                 break;
         }
+        return true;
     }
 
     private static handleLogin(): void {
@@ -132,31 +158,26 @@ export class Menu {
     }
 
     private static handlePurchase(): void {
-        // Primeiro mostrar produtos disponíveis
         Menu.listAllProducts();
         
-        // Coletar dados da compra
         const purchaseData = BuyItemForm.buyItem();
         if (!purchaseData) {
             console.log("Purchase cancelled.");
             return;
         }
 
-        // Buscar produto para mostrar confirmação
         const product = Menu.productController.getProduct(purchaseData.productId);
         if (!product) {
             console.log("Product not found.");
             return;
         }
 
-        // Calcular total
         const total = Menu.purchaseController.calculateTotal(purchaseData.productId, purchaseData.quantity);
         if (total === null) {
             console.log("Unable to calculate total. Product may not be available.");
             return;
         }
 
-        // Mostrar confirmação da compra
         const confirmed = BuyItemForm.displayPurchaseConfirmation(
             product.name,
             purchaseData.quantity,
@@ -170,7 +191,6 @@ export class Menu {
             return;
         }
 
-        // Processar compra
         const result = Menu.purchaseController.processPurchase(
             purchaseData.productId,
             purchaseData.quantity,
@@ -180,7 +200,6 @@ export class Menu {
             purchaseData.deliveryType
         );
 
-        // Mostrar resultado
         console.log(`\n${result.message}`);
         if (result.success && result.purchaseId) {
             console.log(`Purchase ID: ${result.purchaseId}`);
@@ -208,8 +227,31 @@ export class Menu {
     }
 
     public static run(): void {
-        const userChoice = Menu.displayMenu(Menu.menuOptions);
-        Menu.handleMenuChoice(userChoice);
-        console.log(`You selected option ${userChoice}: ${Menu.menuOptions[userChoice - 1]}`);
+        console.log("Welcome to the World Bike Store!");
+        console.log("===========================================");
+        
+        let continueRunning = true;
+        
+        while (continueRunning) {
+            try {
+                console.log("\n");
+                const userChoice = Menu.displayMenu(Menu.menuOptions);
+                
+                continueRunning = Menu.handleMenuChoice(userChoice);
+                
+                if (continueRunning) {
+                    console.log(`\nCompleted: ${Menu.menuOptions[userChoice - 1]}`);
+                    console.log("Press Enter to continue...");
+                    require('readline-sync').question('');
+                }
+                
+            } catch (error) {
+                console.log("An error occurred. Please try again.");
+                console.log("Press Enter to continue...");
+                require('readline-sync').question('');
+            }
+        }
+        
+        console.log("\nSystem terminated successfully.");
     }
 }
