@@ -29,6 +29,7 @@ export class MenuHandlers {
         if (credentials) {
             const success = MenuHandlers.userController.login(credentials.username, credentials.password);
             if (success) {
+                SessionManager.login(credentials.username);
                 console.log("Login successful! Welcome back!");
             } else {
                 console.log("Login failed. Invalid username or password.");
@@ -37,11 +38,13 @@ export class MenuHandlers {
     }
 
     public static handleUserRegistration(): void {
-        const userData = UserRegistrationForm.registerUser();
-        if (userData) {
-            const success = MenuHandlers.userController.register(userData.username, userData.password, userData.email);
+        const user = UserRegistrationForm.registerUser();
+        if (user) {
+            const success = MenuHandlers.userController.register(user);
             if (success) {
+                SessionManager.login(user.getUsername());
                 console.log("User registered successfully!");
+                console.log("You have been automatically logged in!");
             } else {
                 console.log("Registration failed. Username or email already exists.");
             }
@@ -49,13 +52,9 @@ export class MenuHandlers {
     }
 
     public static handleEditProfile(): void {
-        const updatedUserData = EditProfileForm.editProfile();
-        if (updatedUserData) {
-            const success = MenuHandlers.userController.editProfile(
-                updatedUserData.username, 
-                updatedUserData.password, 
-                updatedUserData.email
-            );
+        const updatedUser = EditProfileForm.editProfile();
+        if (updatedUser) {
+            const success = MenuHandlers.userController.editProfile(updatedUser);
             if (success) {
                 console.log("Profile updated successfully!");
             } else {
