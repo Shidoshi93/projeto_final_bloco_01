@@ -4,6 +4,7 @@ import { UserRegistrationForm } from "../forms/UserRegistrationForm";
 import { BuyItemForm } from "../forms/BuyItemForm";
 import { ProductRegistrationForm } from "../forms/ProductRegistrationForm";
 import { EditProfileForm } from "../forms/EditProfileForm";
+import { PurchaseHistoryForm } from "../forms/PurchaseHistoryForm";
 import { ProductController } from "../controller/ProductController";
 import { ProductService } from "../service/ProductService";
 import { UserController } from "../controller/UserController";
@@ -29,6 +30,7 @@ export class Menu {
         "List Products",
         "Buy Item",
         "Sell Item",
+        "Purchase History",
         "Edit Profile",
         "Logout",
         "Exit Application"
@@ -65,9 +67,10 @@ export class Menu {
             3: "📦", // List Products
             4: "🛒", // Buy Item
             5: "💰", // Sell Item
-            6: "✏️",  // Edit Profile
-            7: "👋", // Logout
-            8: "🚪"  // Exit
+            6: "📋", // Purchase History
+            7: "✏️",  // Edit Profile
+            8: "👋", // Logout
+            9: "🚪"  // Exit
         };
         return emojis[choice as keyof typeof emojis] || "📌";
     }
@@ -99,14 +102,18 @@ export class Menu {
                 }
                 break;
             case 6:
+                console.log("You selected Purchase History.");
+                Menu.handlePurchaseHistory();
+                break;
+            case 7:
                 console.log("You selected Edit Profile.");
                 Menu.handleEditProfile();
                 break;
-            case 7:
+            case 8:
                 console.log("You selected Logout.");
                 console.log("Logging out... Goodbye!");
                 break;
-            case 8:
+            case 9:
                 console.log("You selected Exit Application.");
                 console.log("Thank you for using our system! Goodbye!");
                 return false;
@@ -203,6 +210,60 @@ export class Menu {
         console.log(`\n${result.message}`);
         if (result.success && result.purchaseId) {
             console.log(`Purchase ID: ${result.purchaseId}`);
+        }
+    }
+
+    private static handlePurchaseHistory(): void {
+        let continueHistory = true;
+        
+        while (continueHistory) {
+            const choice = PurchaseHistoryForm.displayPurchaseOptions();
+            
+            switch (choice) {
+                case 1:
+                    const userData = PurchaseHistoryForm.viewPurchaseHistory();
+                    if (userData) {
+                        Menu.purchaseController.displayPurchaseHistory(userData.username);
+                    }
+                    break;
+                    
+                case 2:
+                    const purchaseId = PurchaseHistoryForm.getPurchaseId();
+                    if (purchaseId) {
+                        const purchase = Menu.purchaseController.getPurchaseById(purchaseId);
+                        if (purchase) {
+                            console.log("\n=== PURCHASE DETAILS ===");
+                            console.log(`Purchase ID: ${purchase.id}`);
+                            console.log(`Product: ${purchase.productName}`);
+                            console.log(`Quantity: ${purchase.quantity}`);
+                            console.log(`Unit Price: R$ ${purchase.unitPrice.toFixed(2)}`);
+                            console.log(`Total: R$ ${purchase.totalPrice.toFixed(2)}`);
+                            console.log(`Buyer: ${purchase.buyerUsername}`);
+                            console.log(`Payment Method: ${purchase.paymentMethod}`);
+                            console.log(`Shipping Address: ${purchase.shippingAddress}`);
+                            console.log(`Delivery Type: ${purchase.deliveryType}`);
+                            console.log(`Status: ${purchase.status}`);
+                            console.log(`Purchase Date: ${purchase.purchaseDate.toLocaleDateString()}`);
+                            console.log("========================");
+                        } else {
+                            console.log("Purchase not found.");
+                        }
+                    }
+                    break;
+                    
+                case 3:
+                    continueHistory = false;
+                    break;
+                    
+                default:
+                    console.log("Invalid selection.");
+                    break;
+            }
+            
+            if (continueHistory) {
+                console.log("\nPress Enter to continue...");
+                require('readline-sync').question('');
+            }
         }
     }
 
