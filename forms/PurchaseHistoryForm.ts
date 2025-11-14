@@ -2,19 +2,10 @@ import * as readlineSync from "readline-sync";
 
 export class PurchaseHistoryForm {
     
-    public static viewPurchaseHistory(): { username: string } | null {
+    public static viewPurchaseHistory(): boolean {
         console.log("\n=== VIEW PURCHASE HISTORY ===");
-        
-        const username = readlineSync.question("Enter username to view purchase history: ");
-        
-        if (!username || username.trim() === "") {
-            console.log("Username is required.");
-            return null;
-        }
-
-        return {
-            username: username.trim()
-        };
+        console.log("Displaying your purchase history...");
+        return true;
     }
 
     public static displayPurchaseOptions(): number {

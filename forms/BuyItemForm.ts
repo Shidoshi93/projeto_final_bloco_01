@@ -3,7 +3,6 @@ import { question, keyInSelect, questionInt } from "readline-sync";
 interface BuyItemDetails {
     productId: number;
     quantity: number;
-    buyerUsername: string;
     paymentMethod: string;
     shippingAddress: string;
     deliveryType: string;
@@ -26,12 +25,6 @@ export class BuyItemForm {
             
             if (quantity <= 0) {
                 console.log("Invalid quantity. Must be greater than 0.");
-                return null;
-            }
-
-            const buyerUsername: string = question("Enter your username: ");
-            if (!buyerUsername.trim()) {
-                console.log("Username is required.");
                 return null;
             }
 
@@ -59,7 +52,6 @@ export class BuyItemForm {
             const purchaseDetails: BuyItemDetails = {
                 productId,
                 quantity,
-                buyerUsername,
                 paymentMethod,
                 shippingAddress,
                 deliveryType

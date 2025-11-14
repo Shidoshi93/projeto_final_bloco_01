@@ -1,9 +1,26 @@
 import { UserInterface } from "../interfaces/UserInterface";
 import { Endereco } from "../model/Endereco";
 import User from "../types/UserTypes";
+import { UsersMock } from "../util/UsersMock";
 
 export class UserRepository implements UserInterface {
     private users: User[] = [];
+
+    constructor() {
+        // Initialize with mock users
+        this.initializeMockUsers();
+    }
+
+    private initializeMockUsers(): void {
+        const mockUsers = UsersMock.getUsers();
+        mockUsers.forEach(mockUser => {
+            this.users.push({
+                username: mockUser.getUsername(),
+                password: mockUser.getPassword(),
+                email: mockUser.getEmail()
+            });
+        });
+    }
 
     public loginUser(username: string, password: string): boolean {
         const user = this.users.find(u => u.username === username && u.password === password);

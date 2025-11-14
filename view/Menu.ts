@@ -14,6 +14,7 @@ import { PurchaseController } from "../controller/PurchaseController";
 import { PurchaseService } from "../service/PurchaseService";
 import { PurchaseRepository } from "../repository/PurchaseRepository";
 import { ProductRepository } from "../repository/ProductRepository";
+import { SessionManager } from "../util/SessionManager";
 
 export class Menu {
     private static productRepository: ProductRepository = new ProductRepository();
@@ -38,6 +39,7 @@ export class Menu {
 
     public static displayMenu(options: string[]): number {
         console.log("=== MAIN MENU ===");
+        SessionManager.displayCurrentSession();
         console.log("Please choose an option:");
         console.log("┌─────────────────────────────────┐");
         
@@ -79,11 +81,15 @@ export class Menu {
         switch (choice) {
             case 1:
                 console.log("You selected Login.");
-                Menu.handleLogin();
+                if (SessionManager.requireLogout()) {
+                    Menu.handleLogin();
+                }
                 break;
             case 2:
                 console.log("You selected Register.");
-                Menu.handleUserRegistration();
+                if (SessionManager.requireLogout()) {
+                    Menu.handleUserRegistration();
+                }
                 break;
             case 3:
                 console.log("You selected List Products.");
@@ -91,27 +97,40 @@ export class Menu {
                 break;
             case 4:
                 console.log("You selected Buy Item.");
-                Menu.handlePurchase();
+                if (SessionManager.requireLogin()) {
+                    Menu.handlePurchase();
+                }
                 break;
             case 5:
                 console.log("You selected Sell Item.");
-                const newProduct = ProductRegistrationForm.registerProduct();
-                if (newProduct) {
-                    Menu.productController.createProduct(newProduct);
-                    console.log("Product successfully added to catalog!");
+                if (SessionManager.requireLogin()) {
+                    const newProduct = ProductRegistrationForm.registerProduct();
+                    if (newProduct) {
+                        Menu.productController.createProduct(newProduct);
+                        console.log("Product successfully added to catalog!");
+                    }
                 }
                 break;
             case 6:
                 console.log("You selected Purchase History.");
-                Menu.handlePurchaseHistory();
+                if (SessionManager.requireLogin()) {
+                    Menu.handlePurchaseHistory();
+                }
                 break;
             case 7:
                 console.log("You selected Edit Profile.");
-                Menu.handleEditProfile();
+                if (SessionManager.requireLogin()) {
+                    Menu.handleEditProfile();
+                }
                 break;
             case 8:
                 console.log("You selected Logout.");
-                console.log("Logging out... Goodbye!");
+                if (SessionManager.isUserLoggedIn()) {
+                    SessionManager.logout();
+                    console.log("✅ Successfully logged out!");
+                } else {
+                    console.log("⚠️  You are not logged in.");
+                }
                 break;
             case 9:
                 console.log("You selected Exit Application.");
@@ -129,9 +148,10 @@ export class Menu {
         if (credentials) {
             const success = Menu.userController.login(credentials.username, credentials.password);
             if (success) {
-                console.log("Login successful! Welcome back!");
+                SessionManager.login(credentials.username);
+                console.log("✅ Login successful! Welcome back!");
             } else {
-                console.log("Login failed. Invalid username or password.");
+                console.log("❌ Login failed. Invalid username or password.");
             }
         }
     }
@@ -198,10 +218,12 @@ export class Menu {
             return;
         }
 
+        // Use the logged-in user instead of asking for username
+        const currentUser = SessionManager.getCurrentUser();
         const result = Menu.purchaseController.processPurchase(
             purchaseData.productId,
             purchaseData.quantity,
-            purchaseData.buyerUsername,
+            currentUser!,
             purchaseData.paymentMethod,
             purchaseData.shippingAddress,
             purchaseData.deliveryType
@@ -221,9 +243,13 @@ export class Menu {
             
             switch (choice) {
                 case 1:
-                    const userData = PurchaseHistoryForm.viewPurchaseHistory();
-                    if (userData) {
-                        Menu.purchaseController.displayPurchaseHistory(userData.username);
+                    // Use the logged-in user automatically
+                    const confirmed = PurchaseHistoryForm.viewPurchaseHistory();
+                    if (confirmed) {
+                        const currentUser = SessionManager.getCurrentUser();
+                        if (currentUser) {
+                            Menu.purchaseController.displayPurchaseHistory(currentUser);
+                        }
                     }
                     break;
                     
@@ -232,6 +258,13 @@ export class Menu {
                     if (purchaseId) {
                         const purchase = Menu.purchaseController.getPurchaseById(purchaseId);
                         if (purchase) {
+                            // Check if the purchase belongs to the current user
+                            const currentUser = SessionManager.getCurrentUser();
+                            if (purchase.buyerUsername !== currentUser) {
+                                console.log("❌ Access denied! You can only view your own purchases.");
+                                break;
+                            }
+                            
                             console.log("\n=== PURCHASE DETAILS ===");
                             console.log(`Purchase ID: ${purchase.id}`);
                             console.log(`Product: ${purchase.productName}`);
