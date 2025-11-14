@@ -19,5 +19,8 @@
   "homepage": "https://github.com/Shidoshi93/projeto_final_bloco_01#readme",
   "dependencies": {
     "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }
