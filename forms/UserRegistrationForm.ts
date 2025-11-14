@@ -7,20 +7,22 @@ export interface User {
     id?: number;
 }
 
-export function registerUser(): User {
-    console.log("User Registration");
+export class UserRegistrationForm {
+    public static registerUser(): User {
+        console.log("User Registration");
 
-    const username: string = question("Enter username: ");
-    const password: string = question("Enter password: ");
-    const email: string = question("Enter email: ");
+        const username: string = question("Enter username: ");
+        const password: string = question("Enter password: ");
+        const email: string = question("Enter email: ");
 
-    const newUser: User = {
-        username,
-        password,
-        email,
-        id: Date.now() // Simple unique ID based on timestamp
-    };
+        const newUser: User = {
+            username,
+            password,
+            email,
+            id: Date.now() // Simple unique ID based on timestamp
+        };
 
-    console.log("User registered successfully!");
-    return newUser;
+        console.log("User registered successfully!");
+        return newUser;
+    }
 }

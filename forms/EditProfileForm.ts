@@ -7,7 +7,7 @@ export interface User {
 }
 
 export class EditProfileForm {
-    public editProfile(): User {
+    public static editProfile(): User {
         console.log("Edit User Profile Form");
 
         const username: string = question("Enter new username: ");

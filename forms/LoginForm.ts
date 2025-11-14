@@ -6,7 +6,7 @@ export interface LoginCredentials {
 }
 
 export class LoginForm {
-    public loginUser(): LoginCredentials {
+    public static loginUser(): LoginCredentials {
         console.log("User Login");
 
         const username: string = question("Enter username: ");

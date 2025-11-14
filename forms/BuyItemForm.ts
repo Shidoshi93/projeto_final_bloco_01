@@ -9,26 +9,26 @@ interface BuyItemDetails {
 }
 
 export class BuyItemForm {
-    private typeOfDeliveryOptions: string[] = [
+    private static typeOfDeliveryOptions: string[] = [
         "Standard Shipping",
         "Express Shipping",
         "In-Store Pickup"
     ];
 
-    public buyItem(): void {
+    public static buyItem(): void {
         console.log("Buy Item Form");
 
         const itemId: string = question("Enter the Item ID to purchase: ");
         const quantity: number = parseInt(question("Enter quantity to purchase: "), 10);
         const paymentMethod: string = question("Enter payment method (e.g., credit card, PayPal): ");
-        const typeOfDeliveryIndex: number = keyInSelect(this.typeOfDeliveryOptions, "Select type of delivery:");
+        const typeOfDeliveryIndex: number = keyInSelect(BuyItemForm.typeOfDeliveryOptions, "Select type of delivery:");
         
         if (typeOfDeliveryIndex === -1) {
             console.log("No delivery option selected. Purchase cancelled.");
             return;
         }
 
-        const typeOfDelivery: string | undefined = this.typeOfDeliveryOptions[typeOfDeliveryIndex];
+        const typeOfDelivery: string | undefined = BuyItemForm.typeOfDeliveryOptions[typeOfDeliveryIndex];
 
         const shippingAddress: string = question("Enter shipping address: ");
 

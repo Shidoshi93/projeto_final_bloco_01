@@ -8,7 +8,7 @@ export interface Product {
 }
 
 export class ProductRegistrationForm {
-    public registerProduct(): Product {
+    public static registerProduct(): Product {
         console.log("Register a New Product");
 
         const name: string = question("Enter product name: ");
