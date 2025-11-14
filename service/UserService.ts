@@ -1,9 +1,11 @@
 import { UserInterface } from "../interfaces/UserInterface";
+import { Endereco } from "../model/Endereco";
+import { UserRepository } from "../repository/UserRepository";
 
-export class UserService {
-    private userRepository: UserInterface;
+export class UserService implements UserInterface {
+    private userRepository: UserRepository;
 
-    constructor(userRepository: UserInterface) {
+    constructor(userRepository: UserRepository) {
         this.userRepository = userRepository;
     }
 
@@ -17,5 +19,13 @@ export class UserService {
 
     public editProfile(username: string, password: string, email: string): boolean {
         return this.userRepository.editProfile(username, password, email);
+    }
+
+    public deleteUser(username: string): boolean {
+        return this.userRepository.deleteUser(username);
+    }
+
+    addressUser(username: string, endereco: Endereco): boolean {
+        return this.userRepository.addressUser(username, endereco);
     }
 }
