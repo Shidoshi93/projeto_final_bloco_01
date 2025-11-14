@@ -1,11 +1,12 @@
-import { question, keyInSelect } from "readline-sync";
+import { question, keyInSelect, questionInt } from "readline-sync";
 
 interface BuyItemDetails {
-    itemId: string;
+    productId: number;
     quantity: number;
+    buyerUsername: string;
     paymentMethod: string;
     shippingAddress: string;
-    typeOfDelivery: string | undefined;
+    deliveryType: string;
 }
 
 export class BuyItemForm {
@@ -15,33 +16,81 @@ export class BuyItemForm {
         "In-Store Pickup"
     ];
 
-    public static buyItem(): void {
-        console.log("Buy Item Form");
+    public static buyItem(): BuyItemDetails | null {
+        console.log("\n=== BUY ITEM FORM ===");
 
-        const itemId: string = question("Enter the Item ID to purchase: ");
-        const quantity: number = parseInt(question("Enter quantity to purchase: "), 10);
-        const paymentMethod: string = question("Enter payment method (e.g., credit card, PayPal): ");
-        const typeOfDeliveryIndex: number = keyInSelect(BuyItemForm.typeOfDeliveryOptions, "Select type of delivery:");
-        
-        if (typeOfDeliveryIndex === -1) {
-            console.log("No delivery option selected. Purchase cancelled.");
-            return;
+        try {
+            // Solicitar dados da compra
+            const productId: number = questionInt("Enter the Product ID to purchase: ");
+            const quantity: number = questionInt("Enter quantity to purchase: ");
+            
+            if (quantity <= 0) {
+                console.log("Invalid quantity. Must be greater than 0.");
+                return null;
+            }
+
+            const buyerUsername: string = question("Enter your username: ");
+            if (!buyerUsername.trim()) {
+                console.log("Username is required.");
+                return null;
+            }
+
+            const paymentMethod: string = question("Enter payment method (credit card, PayPal, PIX): ");
+            if (!paymentMethod.trim()) {
+                console.log("Payment method is required.");
+                return null;
+            }
+
+            const typeOfDeliveryIndex: number = keyInSelect(BuyItemForm.typeOfDeliveryOptions, "Select type of delivery:");
+            
+            if (typeOfDeliveryIndex === -1) {
+                console.log("No delivery option selected. Purchase cancelled.");
+                return null;
+            }
+
+            const deliveryType: string = BuyItemForm.typeOfDeliveryOptions[typeOfDeliveryIndex] || "Standard Shipping";
+
+            const shippingAddress: string = question("Enter shipping address: ");
+            if (!shippingAddress.trim()) {
+                console.log("Shipping address is required.");
+                return null;
+            }
+
+            const purchaseDetails: BuyItemDetails = {
+                productId,
+                quantity,
+                buyerUsername,
+                paymentMethod,
+                shippingAddress,
+                deliveryType
+            };
+
+            return purchaseDetails;
+
+        } catch (error) {
+            console.log("Error in purchase form. Please try again.");
+            return null;
         }
+    }
 
-        const typeOfDelivery: string | undefined = BuyItemForm.typeOfDeliveryOptions[typeOfDeliveryIndex];
+    public static displayPurchaseConfirmation(
+        productName: string,
+        quantity: number,
+        unitPrice: number,
+        totalPrice: number,
+        deliveryType: string
+    ): boolean {
+        console.log("\n=== PURCHASE CONFIRMATION ===");
+        console.log(`Product: ${productName}`);
+        console.log(`Quantity: ${quantity}`);
+        console.log(`Unit Price: R$ ${unitPrice.toFixed(2)}`);
+        console.log(`Total Price: R$ ${totalPrice.toFixed(2)}`);
+        console.log(`Delivery: ${deliveryType}`);
+        console.log("=============================");
 
-        const shippingAddress: string = question("Enter shipping address: ");
-
-        const purchaseDetails: BuyItemDetails = {
-            itemId,
-            quantity,
-            paymentMethod,
-            shippingAddress,
-            typeOfDelivery
-        };
-
-        // call the controller function to handle item purchase here
-
-        console.log(`Successfully purchased ${quantity} of item ID: ${itemId}`);
+        const confirmOptions = ["Yes, confirm purchase", "No, cancel"];
+        const confirmIndex = keyInSelect(confirmOptions, "Confirm this purchase?");
+        
+        return confirmIndex === 0;
     }
 }

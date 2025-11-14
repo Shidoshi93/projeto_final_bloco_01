@@ -9,10 +9,19 @@ import { ProductService } from "../service/ProductService";
 import { UserController } from "../controller/UserController";
 import { UserService } from "../service/UserService";
 import { UserRepository } from "../repository/UserRepository";
+import { PurchaseController } from "../controller/PurchaseController";
+import { PurchaseService } from "../service/PurchaseService";
+import { PurchaseRepository } from "../repository/PurchaseRepository";
+import { ProductRepository } from "../repository/ProductRepository";
 
 export class Menu {
-    private static productController: ProductController = new ProductController(new ProductService());
+    private static productRepository: ProductRepository = new ProductRepository();
+    private static productService: ProductService = new ProductService();
+    private static productController: ProductController = new ProductController(Menu.productService);
     private static userController: UserController = new UserController(new UserService(new UserRepository()));
+    private static purchaseController: PurchaseController = new PurchaseController(
+        new PurchaseService(new PurchaseRepository(Menu.productRepository))
+    );
 
     private static readonly menuOptions: string[] = [
         "Login",
@@ -58,7 +67,7 @@ export class Menu {
                 break;
             case 4:
                 console.log("You selected Buy Item.");
-                BuyItemForm.buyItem();
+                Menu.handlePurchase();
                 break;
             case 5:
                 console.log("You selected Sell Item.");
@@ -119,6 +128,62 @@ export class Menu {
             } else {
                 console.log("Profile update failed. User not found.");
             }
+        }
+    }
+
+    private static handlePurchase(): void {
+        // Primeiro mostrar produtos disponíveis
+        Menu.listAllProducts();
+        
+        // Coletar dados da compra
+        const purchaseData = BuyItemForm.buyItem();
+        if (!purchaseData) {
+            console.log("Purchase cancelled.");
+            return;
+        }
+
+        // Buscar produto para mostrar confirmação
+        const product = Menu.productController.getProduct(purchaseData.productId);
+        if (!product) {
+            console.log("Product not found.");
+            return;
+        }
+
+        // Calcular total
+        const total = Menu.purchaseController.calculateTotal(purchaseData.productId, purchaseData.quantity);
+        if (total === null) {
+            console.log("Unable to calculate total. Product may not be available.");
+            return;
+        }
+
+        // Mostrar confirmação da compra
+        const confirmed = BuyItemForm.displayPurchaseConfirmation(
+            product.name,
+            purchaseData.quantity,
+            product.price,
+            total,
+            purchaseData.deliveryType
+        );
+
+        if (!confirmed) {
+            console.log("Purchase cancelled by user.");
+            return;
+        }
+
+        // Processar compra
+        const result = Menu.purchaseController.processPurchase(
+            purchaseData.productId,
+            purchaseData.quantity,
+            purchaseData.buyerUsername,
+            purchaseData.paymentMethod,
+            purchaseData.shippingAddress,
+            purchaseData.deliveryType
+        );
+
+        // Mostrar resultado
+        console.log(`\n${result.message}`);
+        if (result.success && result.purchaseId) {
+            console.log(`Purchase ID: ${result.purchaseId}`);
         }
     }
 
