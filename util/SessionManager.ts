@@ -8,7 +8,6 @@ export class SessionManager {
     public static login(username: string): void {
         SessionManager.currentUser = username;
         SessionManager.isLoggedIn = true;
-        // Busca o userId dinamicamente do repositório
         SessionManager.currentUserId = SessionManager.findUserIdByUsername(username);
     }
 
@@ -45,7 +44,7 @@ export class SessionManager {
     public static requireLogin(): boolean {
         if (!SessionManager.isLoggedIn) {
             console.log("\nAccess denied! You need to login first.");
-            console.log("Please select 'Login' from the menu to authenticate.");
+            console.log("Please select 'Login' or 'Register' from the menu to authenticate.");
             return false;
         }
         return true;
