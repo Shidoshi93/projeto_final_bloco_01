@@ -11,11 +11,11 @@ export class UserRegistrationForm {
             return null;
         }
 
-        const password: string = ("Enter password: ");
+        const password: string = question("Enter password: ", {
+            hideEchoBack: true
+        });
         if (!password || password.trim() === "") {
-            console.log("Password is required.", {
-                hideEchoBack: true
-            });
+            console.log("Password is required.");
             return null;
         }
 
