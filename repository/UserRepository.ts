@@ -1,29 +1,60 @@
 import { UserInterface } from "../interfaces/UserInterface";
-import User from "../types/UserTypes";
+import { Endereco } from "../model/Endereco";
+import { User } from "../model/User";
+import { getUsers } from "../util/UsersMock";
 
 export class UserRepository implements UserInterface {
-    private users: User[] = [];
+    private users: User[] = [...getUsers()];
+
 
     public loginUser(username: string, password: string): boolean {
-        const user = this.users.find(u => u.username === username && u.password === password);
+        const user = this.users.find(u => u.getUsername() === username && u.getPassword() === password);
         return !!user;
     }
 
-    public registerUser(username: string, password: string, email: string): boolean {
-        const userExists = this.users.some(u => u.username === username || u.email === email);
+    public registerUser(user: User): boolean {
+        const userExists = this.users.some(u => u.getUsername() === user.getUsername() || u.getEmail() === user.getEmail());
         if (userExists) {
             return false;
         }
-        this.users.push({ username, password, email });
+        this.users.push(user);
         return true;
     }
 
-    public editProfile(username: string, password: string, email: string): boolean {
-        const userIndex = this.users.findIndex(u => u.username === username);
+    public editProfile(user: User): boolean {
+        const userIndex = this.users.findIndex(u => u.getUsername() === user.getUsername());
         if (userIndex === -1) {
             return false;
         }
-        this.users[userIndex] = { username, password, email };
+
+        const existingUser = this.users[userIndex];
+        if (!existingUser) {
+            return false;
+        }
+
+        this.users[userIndex] = user;
         return true;
+    }
+
+    public deleteUser(username: string): boolean {
+        const userIndex = this.users.findIndex(u => u.getUsername() === username);
+        if (userIndex === -1) {
+            return false;
+        }
+        this.users.splice(userIndex, 1);
+        return true;
+    }
+
+    addressUser(username: string, endereco: Endereco): boolean {
+        const user = this.users.find(u => u.getUsername() === username);
+        if (!user) {
+            return false;
+        }
+        user.setEndereco(endereco);
+        return true;
+    }
+
+    public getUserByUsername(username: string): User | null {
+        return this.users.find(u => u.getUsername() === username) || null;
     }
 }

@@ -1,44 +1,34 @@
 import { ProductInterface } from "../interfaces/ProductInterface";
+import { Bike } from "../model/BIke";
 import { mockProducts } from "../util/ProductsMock";
 
-type Product = {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    type: string;
-};
-
 export class ProductRepository implements ProductInterface {
-    private products: Product[] = [...mockProducts];
-    private nextId: number = 16;
+    private products: Bike[] = [...mockProducts];
 
-    public addProduct(product: Product): void {
-        const newProduct = { ...product, id: this.nextId++ };
-        this.products.push(newProduct);
+    public addProduct(product: Bike): void {
+        this.products.push(product);
     }
 
-    public getProductById(id: number): Product | null {
-        const product = this.products.find(p => p.id === id);
+    public getProductById(id: number): Bike | null {
+        const product = this.products.find(p => p.getId() === id);
         return product || null;
     }
 
-    public updateProduct(id: number, updatedProduct: Product): void {
-        const index = this.products.findIndex(p => p.id === id);
+    public updateProduct(id: number, updatedProduct: Bike): void {
+        const index = this.products.findIndex(p => p.getId() === id);
         if (index !== -1) {
-            this.products[index] = { ...updatedProduct, id };
+            this.products[index] = updatedProduct;
         }
     }
 
     public deleteProduct(id: number): void {
-        const index = this.products.findIndex(p => p.id === id);
+        const index = this.products.findIndex(p => p.getId() === id);
         if (index !== -1) {
             this.products.splice(index, 1);
         }
     }
 
-    public listAllProducts(): Product[] {
+    public listAllProducts(): Bike[] {
         return [...this.products];
     }
 }

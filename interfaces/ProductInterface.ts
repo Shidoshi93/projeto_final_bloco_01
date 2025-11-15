@@ -1,9 +1,9 @@
-import Product from "../types/Product";
+import { Bike } from "../model/BIke";
 
 export interface ProductInterface {
-    addProduct(product: Product): void;
-    getProductById(id: number): Product | null;
-    updateProduct(id: number, updatedProduct: Product): void;
+    addProduct(product: Bike): void;
+    getProductById(id: number): Bike | null;
+    updateProduct(id: number, updatedProduct: Bike): void;
     deleteProduct(id: number): void;
-    listAllProducts(): Product[];
+    listAllProducts(): Bike[];
 }

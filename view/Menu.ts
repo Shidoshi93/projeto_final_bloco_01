@@ -1,73 +1,100 @@
-import { questionInt } from "readline-sync";
-import { LoginForm } from "../forms/LoginForm";
-import { UserRegistrationForm } from "../forms/UserRegistrationForm";
-import { BuyItemForm } from "../forms/BuyItemForm";
-import { ProductRegistrationForm } from "../forms/ProductRegistrationForm";
-import { EditProfileForm } from "../forms/EditProfileForm";
+import { MenuDisplay } from "./MenuDisplay";
+import { MenuHandlers } from "./MenuHandlers";
+import { SessionManager } from "../util/SessionManager";
+import { keyInSelect } from "readline-sync";
 
 export class Menu {
-    private static readonly menuOptions: string[] = [
-        "Login",
-        "Register",
-        "Buy Item",
-        "Sell Item",
-        "Edit Profile",
-        "Logout"
-    ];
-
-    public static displayMenu(options: string[]): number {
-        console.log("Please choose an option:");
-        options.forEach((option, index) => {
-            console.log(`${index + 1}. ${option}`);
-        });
-
-        let choice: number;
-        while (true) {
-            choice = questionInt("Enter the number of your choice: ");
-            if (choice >= 1 && choice <= options.length) {
-                break;
-            }
-            console.log("Invalid choice. Please try again.");
-        }
-
-        return choice;
-    }
-
-    public static handleMenuChoice(choice: number): void {
+    public static handleMenuChoice(choice: number): boolean {
         switch (choice) {
             case 1:
                 console.log("You selected Login.");
-                LoginForm.loginUser();
+                if (!SessionManager.isUserLoggedIn()) {
+                    MenuHandlers.handleLogin();
+                } else {
+                    console.log("You are already logged in!");
+                }
                 break;
             case 2:
                 console.log("You selected Register.");
-                UserRegistrationForm.registerUser();
+                MenuHandlers.handleUserRegistration();
                 break;
             case 3:
-                console.log("You selected Buy Item.");
-                BuyItemForm.buyItem();
+                console.log("You selected List Products.");
+                MenuHandlers.listAllProducts();
                 break;
             case 4:
-                console.log("You selected Sell Item.");
-                ProductRegistrationForm.registerProduct();
+                console.log("You selected Buy Item.");
+                if (SessionManager.requireLogin()) {
+                    MenuHandlers.handlePurchase();
+                }
                 break;
             case 5:
-                console.log("You selected Edit Profile.");
-                EditProfileForm.editProfile();
+                console.log("You selected Sell Item.");
+
+                const typeIndex = keyInSelect(["mountain", "road", "electric"], "Select bike type: ");
+                const type: string = typeIndex !== -1 ? ["mountain", "road", "electric"][typeIndex]! : "road";
+
+                if (SessionManager.requireLogin()) {
+                    MenuHandlers.handleSellItem(type);
+                }
                 break;
             case 6:
-                console.log("You selected Logout.");
-                // call the controller function to handle user logout here
+                console.log("You selected Purchase History.");
+                if (SessionManager.requireLogin()) {
+                    MenuHandlers.handlePurchaseHistory();
+                }
                 break;
+            case 7:
+                console.log("You selected Edit Profile.");
+                if (SessionManager.requireLogin()) {
+                    MenuHandlers.handleEditProfile();
+                }
+                break;
+            case 8:
+                console.log("You selected Logout.");
+                if (SessionManager.isUserLoggedIn()) {
+                    SessionManager.logout();
+                    console.log("Logged out successfully!");
+                } else {
+                    console.log("You are not logged in.");
+                }
+                break;
+            case 9:
+                console.log("You selected Exit Application.");
+                console.log("Thank you for using our system! Goodbye!");
+                return false;
             default:
                 console.log("Invalid selection.");
                 break;
         }
+        return true;
     }
 
     public static run(): void {
-        const userChoice = Menu.displayMenu(Menu.menuOptions);
-        Menu.handleMenuChoice(userChoice);
-        console.log(`You selected option ${userChoice}: ${Menu.menuOptions[userChoice - 1]}`);
+        MenuDisplay.showWelcome();
+        
+        let continueRunning = true;
+        
+        while (continueRunning) {
+            try {
+                console.log("\n");
+                const userChoice = MenuDisplay.displayMenu();
+                
+                continueRunning = Menu.handleMenuChoice(userChoice);
+                
+                if (continueRunning) {
+                    const menuOptions = MenuDisplay.getMenuOptions();
+                    const selectedOption = menuOptions[userChoice - 1];
+                    if (selectedOption) {
+                        MenuDisplay.showCompletion(selectedOption);
+                    }
+                }
+                
+            } catch (error) {
+                MenuDisplay.showError();
+            }
+        }
+        
+        MenuDisplay.showGoodbye();
     }
 }

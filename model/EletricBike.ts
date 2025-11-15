@@ -10,10 +10,11 @@ export class EletricBike extends Bike {
         price: number,
         quantity: number,
         type: string,
+        userId: number,
         batteryCapacity: number,
         rangePerCharge: number
     ) {
-        super(name, description, price, quantity, type);
+        super(name, description, price, quantity, type, userId);
         this.batteryCapacity = batteryCapacity;
         this.rangePerCharge = rangePerCharge;
     }

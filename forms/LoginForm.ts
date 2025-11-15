@@ -16,10 +16,7 @@ export class LoginForm {
             username,
             password
         };
-
-        // call the controller function to handle user login here
-
-        console.log("Login successful!");
+        
         return credentials;
     }
 }

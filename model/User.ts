@@ -5,6 +5,7 @@ export class User {
     private password: string;
     private email: string;
     private isSeller: boolean;
+    private id: number;
     private endereco: Endereco | undefined;
 
     constructor(username: string, password: string, email: string, isSeller: boolean, endereco?: Endereco
@@ -13,6 +14,7 @@ export class User {
         this.password = password;
         this.email = email;
         this.isSeller = isSeller;
+        this.id = Date.now();
         this.endereco = endereco;
     }
 
@@ -54,5 +56,13 @@ export class User {
 
     public setEndereco(endereco: Endereco): void {
         this.endereco = endereco;
+    }
+
+    public getId(): number {
+        return this.id;
+    }
+
+    public setId(id: number): void {
+        this.id = id;
     }
 }
