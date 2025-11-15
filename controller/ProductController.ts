@@ -1,10 +1,11 @@
 import { Bike } from "../model/BIke";
 import { ProductService } from "../service/ProductService";
 import { ProductOutput } from "../types/Product";
+import { bikeTypes } from "../util/ProductsMock";
 
 export class ProductController {
     private productService: ProductService;
-    private readonly VALID_TYPES = ['mountain', 'road', 'electric'];
+    private readonly VALID_TYPES = bikeTypes;
 
     constructor(productService: ProductService) {
         this.productService = productService;
@@ -15,7 +16,7 @@ export class ProductController {
             return { success: false, message: "Product data is required." };
         }
 
-        if (!data.getName || !data.getDescription || !data.getPrice || !data.getQuantity || !data.getUserId || !data.getType) {
+        if (!data.getName() || !data.getDescription() || !data.getPrice() || !data.getQuantity() || !data.getUserId() || !data.getType()) {
             return { success: false, message: "All fields are required: name, description, price, quantity, userId, type." };
         }
 
@@ -31,8 +32,8 @@ export class ProductController {
             return { success: false, message: "Quantity cannot be negative." };
         }
 
-        if (!this.VALID_TYPES.includes(data.getType().toLowerCase())) {
-            return { success: false, message: `Type must be one of: ${this.VALID_TYPES.join(', ')}` };
+        if (!Object.values(this.VALID_TYPES).includes(data.getType().toLowerCase())) {
+            return { success: false, message: `Type must be one of: ${Object.values(this.VALID_TYPES).join(', ')}` };
         }
 
         try {
@@ -73,7 +74,7 @@ export class ProductController {
         }
     }
 
-    public updateProduct(id: number, data: any): { success: boolean; message: string } {
+    public updateProduct(id: number, data: Bike): { success: boolean; message: string } {
         if (!id || id <= 0) {
             return { success: false, message: "Valid product ID is required." };
         }
