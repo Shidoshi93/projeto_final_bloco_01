@@ -5,13 +5,9 @@ export class MenuDisplay {
     private static readonly menuOptions: string[] = [
         "Login",
         "Register",
-        "List Products",
-        "Buy Item",
-        "Sell Item",
-        "Purchase History",
-        "Edit Profile",
-        "Logout",
-        "Exit Application"
+        "Buyer",
+        "Seller",
+        "Exit"
     ];
 
     public static displayMenu(): number {
@@ -43,13 +39,9 @@ export class MenuDisplay {
         const emojis = {
             1: "🔐", // Login
             2: "📝", // Register
-            3: "📦", // List Products
-            4: "🛒", // Buy Item
-            5: "💰", // Sell Item
-            6: "📋", // Purchase History
-            7: "✏️",  // Edit Profile
-            8: "👋", // Logout
-            9: "🚪"  // Exit
+            3: "�️", // Buyer
+            4: "�", // Seller
+            5: "🚪"  // Exit
         };
         return emojis[choice as keyof typeof emojis] || "📌";
     }
