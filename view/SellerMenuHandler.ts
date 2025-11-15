@@ -56,8 +56,8 @@ export class SellerMenuHandler {
         const typeIndex = keyInSelect(["mountain", "road", "electric"], "Select bike type: ");
         let type: string = "mountain";
         if (typeof typeIndex === 'number' && typeIndex !== -1) {
-            const _arr = ["mountain", "road", "electric"];
-            type = _arr[typeIndex] ?? "mountain";
+            const typeList = ["mountain", "road", "electric"];
+            type = typeList[typeIndex] ?? "mountain";
         }
         const newProduct = ProductRegistrationForm.registerProduct(type);
         if (newProduct) {
@@ -87,24 +87,21 @@ export class SellerMenuHandler {
         }
 
         products.forEach((product: any) => {
-            console.log(`\nID: ${product.id}`);
+            product.getDetails();
+            /* console.log(`\nID: ${product.id}`);
             console.log(`Name: ${product.name}`);
             console.log(`Description: ${product.description}`);
             console.log(`Price: R$ ${product.price.toFixed(2)}`);
             console.log(`Quantity: ${product.quantity}`);
             console.log(`Type: ${product.type}`);
-            console.log("------------------------");
+            console.log("------------------------"); */
         });
     }
 
     private static getProductById(): void {
-        const idInput = question('Enter product ID: ');
-        const id = parseInt(idInput);
-        if (isNaN(id)) {
-            console.log('Invalid ID');
-            return;
-        }
-        const productResult = SellerMenuHandler.productController.getProduct(id);
+        const idInput = questionInt('Enter product ID: ');
+
+        const productResult = SellerMenuHandler.productController.getProduct(idInput);
         if (!productResult.success || !productResult.product) {
             console.log(`Product not found: ${productResult.message}`);
         } else {
@@ -121,13 +118,9 @@ export class SellerMenuHandler {
     }
 
     private static deleteProductById(): void {
-        const idInput = question('Enter product ID to delete: ');
-        const id = parseInt(idInput);
-        if (isNaN(id)) {
-            console.log('Invalid ID');
-            return;
-        }
-        const productResult = SellerMenuHandler.productController.getProduct(id);
+        const idInput = questionInt('Enter product ID to delete: ');
+        const productResult = SellerMenuHandler.productController.getProduct(idInput);
+
         if (!productResult.success || !productResult.product) {
             console.log('Product not found.');
             return;
@@ -138,18 +131,14 @@ export class SellerMenuHandler {
             console.log('You can only delete products you own.');
             return;
         }
-        const delRes = SellerMenuHandler.productController.deleteProduct(id);
+        const delRes = SellerMenuHandler.productController.deleteProduct(idInput);
         console.log(delRes.message);
     }
 
     private static updateProductById(): void {
-        const idInput = question('Enter product ID to update: ');
-        const id = parseInt(idInput);
-        if (isNaN(id)) {
-            console.log('Invalid ID');
-            return;
-        }
-        const existingBike = SellerMenuHandler.productService.getProductById(id);
+        const idInput = questionInt('Enter product ID to update: ');
+        const existingBike = SellerMenuHandler.productService.getProductById(idInput);
+
         if (!existingBike) {
             console.log('Product not found.');
             return;
@@ -163,26 +152,20 @@ export class SellerMenuHandler {
         console.log('Leave a field empty to keep current value.');
         const newName = question(`Name (${existingBike.getName()}): `);
         const newDescription = question(`Description (${existingBike.getDescription()}): `);
-        const priceInput = question(`Price (${existingBike.getPrice()}): `);
-        const qtyInput = question(`Quantity (${existingBike.getQuantity()}): `);
+        const priceInput = questionInt(`Price (${existingBike.getPrice().toFixed(2)}): `);
+        const qtyInput = questionInt(`Quantity (${existingBike.getQuantity()}): `);
         const typeIndex = keyInSelect(["mountain", "road", "electric"], "Select bike type (or Cancel to keep): ");
 
         if (newName && newName.trim().length > 0) existingBike.setName(newName);
         if (newDescription && newDescription.trim().length > 0) existingBike.setDescription(newDescription);
-        if (priceInput && priceInput.trim().length > 0) {
-            const p = parseFloat(priceInput);
-            if (!isNaN(p)) existingBike.setPrice(p);
-        }
-        if (qtyInput && qtyInput.trim().length > 0) {
-            const q = parseInt(qtyInput);
-            if (!isNaN(q)) existingBike.setQuantity(q);
-        }
+        existingBike.setPrice(priceInput);
+        existingBike.setQuantity(qtyInput);
         if (typeof typeIndex === 'number' && typeIndex !== -1) {
             const newType = ["mountain", "road", "electric"][typeIndex];
             if (newType) existingBike.setType(newType);
         }
 
-        const updateRes = SellerMenuHandler.productController.updateProduct(id, existingBike);
+        const updateRes = SellerMenuHandler.productController.updateProduct(idInput, existingBike);
         console.log(updateRes.message);
     }
 }

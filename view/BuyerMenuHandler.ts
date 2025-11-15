@@ -6,7 +6,7 @@ import { PurchaseService } from "../service/PurchaseService";
 import { PurchaseRepository } from "../repository/PurchaseRepository";
 import { ProductRepository } from "../repository/ProductRepository";
 import { SessionManager } from "../util/SessionManager";
-import { questionInt, question } from "readline-sync";
+import { questionInt } from "readline-sync";
 
 export class BuyerMenuHandler {
     private static productRepository: ProductRepository = new ProductRepository();
