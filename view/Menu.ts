@@ -1,7 +1,8 @@
 import { MenuDisplay } from "./MenuDisplay";
 import { MenuHandlers } from "./MenuHandlers";
+import { BuyerMenuHandler } from "./BuyerMenuHandler";
+import { SellerMenuHandler } from "./SellerMenuHandler";
 import { SessionManager } from "../util/SessionManager";
-import { keyInSelect } from "readline-sync";
 
 export class Menu {
     public static handleMenuChoice(choice: number): boolean {
@@ -19,47 +20,16 @@ export class Menu {
                 MenuHandlers.handleUserRegistration();
                 break;
             case 3:
-                console.log("You selected List Products.");
-                MenuHandlers.listAllProducts();
+                console.log("You selected Buyer.");
+                BuyerMenuHandler.showBuyerMenu();
                 break;
             case 4:
-                console.log("You selected Buy Item.");
+                console.log("You selected Seller.");
                 if (SessionManager.requireLogin()) {
-                    MenuHandlers.handlePurchase();
+                    SellerMenuHandler.showSellerMenu();
                 }
                 break;
             case 5:
-                console.log("You selected Sell Item.");
-
-                const typeIndex = keyInSelect(["mountain", "road", "electric"], "Select bike type: ");
-                const type: string = typeIndex !== -1 ? ["mountain", "road", "electric"][typeIndex]! : "road";
-
-                if (SessionManager.requireLogin()) {
-                    MenuHandlers.handleSellItem(type);
-                }
-                break;
-            case 6:
-                console.log("You selected Purchase History.");
-                if (SessionManager.requireLogin()) {
-                    MenuHandlers.handlePurchaseHistory();
-                }
-                break;
-            case 7:
-                console.log("You selected Edit Profile.");
-                if (SessionManager.requireLogin()) {
-                    MenuHandlers.handleEditProfile();
-                }
-                break;
-            case 8:
-                console.log("You selected Logout.");
-                if (SessionManager.isUserLoggedIn()) {
-                    SessionManager.logout();
-                    console.log("Logged out successfully!");
-                } else {
-                    console.log("You are not logged in.");
-                }
-                break;
-            case 9:
                 console.log("You selected Exit Application.");
                 console.log("Thank you for using our system! Goodbye!");
                 return false;
