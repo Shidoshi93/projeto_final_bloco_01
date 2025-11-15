@@ -1,10 +1,9 @@
 import { UserInterface } from "../interfaces/UserInterface";
 import { Endereco } from "../model/Endereco";
 import { User } from "../model/User";
-import { getUsers } from "../util/UsersMock";
 
 export class UserRepository implements UserInterface {
-    private users: User[] = [...getUsers()];
+    private users: User[] = new Array<User>();
 
 
     public loginUser(username: string, password: string): boolean {
