@@ -10,11 +10,11 @@ export class EletricBike extends Bike {
         price: number,
         quantity: number,
         type: string,
-        userId: number,
+        ownerUserId: number,
         batteryCapacity: number,
         rangePerCharge: number
     ) {
-        super(name, description, price, quantity, type, userId);
+        super(name, description, price, quantity, type, ownerUserId);
         this.batteryCapacity = batteryCapacity;
         this.rangePerCharge = rangePerCharge;
     }
@@ -28,6 +28,6 @@ export class EletricBike extends Bike {
     }
 
     public getDetails(): string {
-        return `Eletric Bike: ${this.getName()},\n Description: ${this.getDescription()},\n Price: $${this.getPrice().toFixed(2)},\n Quantity: ${this.getQuantity()},\n Type: ${this.getType()},\n Battery Capacity: ${this.batteryCapacity}Wh,\n Range per Charge: ${this.rangePerCharge}km`;
+        return `Eletric Bike: ${this.getName()},\n Description: ${this.getDescription()},\n Price: $${this.getPrice().toFixed(2)},\n Quantity: ${this.getQuantity()},\n Type: ${this.getType()},\n Battery Capacity: ${this.batteryCapacity}Wh,\n Range per Charge: ${this.rangePerCharge}km,\n id: ${this.getId()},\n ownerUserId: ${this.getUserId()}`;
     }
 }
