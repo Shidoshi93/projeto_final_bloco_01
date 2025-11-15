@@ -45,29 +45,19 @@ export class ProductController {
         }
     }
 
-    public getProduct(id: number): { success: boolean; message: string; product?: ProductOutput } {
+    public getProduct(id: number): { success: boolean; message: string; product?: Bike } {
         if (!id || id <= 0) {
             return { success: false, message: "Valid product ID is required." };
         }
 
         try {
-            const product = this.productService.getProductById(id);
+            const product: Bike | null = this.productService.getProductById(id);
             
             if (!product) {
                 return { success: false, message: "Product not found." };
             }
 
-            const productOutput: ProductOutput = {
-                id: product.getId(),
-                name: product.getName(),
-                description: product.getDescription(),
-                price: product.getPrice(),
-                quantity: product.getQuantity(),
-                type: product.getType(),
-                userId: product.getUserId()
-            };
-
-            return { success: true, message: "Product found.", product: productOutput };
+            return { success: true, message: "Product found.", product: product };
 
         } catch (error) {
             return { success: false, message: "Error retrieving product." };
@@ -84,7 +74,7 @@ export class ProductController {
         }
 
         try {
-            const existingProduct = this.productService.getProductById(id);
+            const existingProduct: Bike | null = this.productService.getProductById(id);
             if (!existingProduct) {
                 return { success: false, message: "Product not found." };
             }
@@ -103,7 +93,7 @@ export class ProductController {
         }
 
         try {
-            const existingProduct = this.productService.getProductById(id);
+            const existingProduct: Bike | null = this.productService.getProductById(id);
             if (!existingProduct) {
                 return { success: false, message: "Product not found." };
             }
@@ -118,7 +108,7 @@ export class ProductController {
 
     public listProducts(): { success: boolean; message: string; products: Bike[] } {
         try {
-            const products = this.productService.listAllProducts();
+            const products: Bike[] = this.productService.listAllProducts();
             return {
                 success: true,
                 message: `Found ${products.length} products.`,

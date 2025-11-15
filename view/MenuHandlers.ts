@@ -87,9 +87,9 @@ export class MenuHandlers {
         }
 
         const confirmed = BuyItemForm.displayPurchaseConfirmation(
-            product.name,
+            product.getName(),
             purchaseData.quantity,
-            product.price,
+            product.getPrice(),
             total,
             purchaseData.deliveryType
         );

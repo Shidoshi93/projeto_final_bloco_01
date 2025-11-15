@@ -87,14 +87,8 @@ export class SellerMenuHandler {
         }
 
         products.forEach((product: any) => {
-            product.getDetails();
-            /* console.log(`\nID: ${product.id}`);
-            console.log(`Name: ${product.name}`);
-            console.log(`Description: ${product.description}`);
-            console.log(`Price: R$ ${product.price.toFixed(2)}`);
-            console.log(`Quantity: ${product.quantity}`);
-            console.log(`Type: ${product.type}`);
-            console.log("------------------------"); */
+            console.log(product.getDetails());
+            console.log("------------------------");
         });
     }
 
@@ -105,15 +99,9 @@ export class SellerMenuHandler {
         if (!productResult.success || !productResult.product) {
             console.log(`Product not found: ${productResult.message}`);
         } else {
-            const p = productResult.product;
+            const product = productResult.product;
             console.log('\n=== PRODUCT ===');
-            console.log(`ID: ${p.id}`);
-            console.log(`Name: ${p.name}`);
-            console.log(`Description: ${p.description}`);
-            console.log(`Price: R$ ${p.price.toFixed(2)}`);
-            console.log(`Quantity: ${p.quantity}`);
-            console.log(`Type: ${p.type}`);
-            console.log(`Owner UserId: ${p.userId}`);
+            console.log(product.getDetails());
         }
     }
 
@@ -127,7 +115,7 @@ export class SellerMenuHandler {
         }
         const product = productResult.product;
         const currentUserId = SessionManager.getCurrentUserId();
-        if (product.userId !== currentUserId) {
+        if (product.getUserId() !== currentUserId) {
             console.log('You can only delete products you own.');
             return;
         }

@@ -62,12 +62,7 @@ export class BuyerMenuHandler {
         }
 
         products.forEach((product: any) => {
-            console.log(`\nID: ${product.id}`);
-            console.log(`Name: ${product.name}`);
-            console.log(`Description: ${product.description}`);
-            console.log(`Price: R$ ${product.price.toFixed(2)}`);
-            console.log(`Quantity: ${product.quantity}`);
-            console.log(`Type: ${product.type}`);
+            console.log(product.getDetails());
             console.log("------------------------");
         });
     }
@@ -96,9 +91,9 @@ export class BuyerMenuHandler {
         }
 
         const confirmed = BuyItemForm.displayPurchaseConfirmation(
-            product.name,
+            product.getName(),
             purchaseData.quantity,
-            product.price,
+            product.getPrice(),
             total,
             purchaseData.deliveryType
         );

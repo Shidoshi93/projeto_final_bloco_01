@@ -10,11 +10,11 @@ export class MoutainBike extends Bike {
         price: number,
         quantity: number,
         type: string,
-        userId: number,
+        ownerUserId: number,
         suspensionType: string,
         frameMaterial: string
     ) {
-        super(name, description, price, quantity, type, userId);
+        super(name, description, price, quantity, type, ownerUserId);
         this.suspensionType = suspensionType;
         this.frameMaterial = frameMaterial;
     }
@@ -28,6 +28,6 @@ export class MoutainBike extends Bike {
     }
 
     public getDetails(): string {
-        return `Moutain Bike: ${this.getName()},\n Description: ${this.getDescription()},\n Price: $${this.getPrice().toFixed(2)},\n Quantity: ${this.getQuantity()},\n Type: ${this.getType()},\n Suspension Type: ${this.suspensionType},\n Frame Material: ${this.frameMaterial}`;
+        return `Moutain Bike: ${this.getName()},\n Description: ${this.getDescription()},\n Price: $${this.getPrice().toFixed(2)},\n Quantity: ${this.getQuantity()},\n Type: ${this.getType()},\n Suspension Type: ${this.suspensionType},\n Frame Material: ${this.frameMaterial},\n id: ${this.getId()},\n ownerUserId: ${this.getUserId()}`;
     }
 }
