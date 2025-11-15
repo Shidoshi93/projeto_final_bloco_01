@@ -3,6 +3,12 @@ import { MoutainBike } from "../model/MoutainBike";
 import { RoadBike } from "../model/RoadBike";
 import { EletricBike } from "../model/EletricBike";
 
+export const bikeTypes = {
+    1: "mountain", 
+    2: "road", 
+    3: "electric"
+};
+
 export const mockProducts: Bike[] = [
     new MoutainBike(
         "Trek Marlin 7 MTB", 
