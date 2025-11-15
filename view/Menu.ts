@@ -1,6 +1,7 @@
 import { MenuDisplay } from "./MenuDisplay";
 import { MenuHandlers } from "./MenuHandlers";
 import { SessionManager } from "../util/SessionManager";
+import { keyInSelect } from "readline-sync";
 
 export class Menu {
     public static handleMenuChoice(choice: number): boolean {
@@ -29,8 +30,12 @@ export class Menu {
                 break;
             case 5:
                 console.log("You selected Sell Item.");
+
+                const typeIndex = keyInSelect(["mountain", "road", "electric"], "Select bike type: ");
+                const type: string = typeIndex !== -1 ? ["mountain", "road", "electric"][typeIndex]! : "road";
+
                 if (SessionManager.requireLogin()) {
-                    MenuHandlers.handleSellItem();
+                    MenuHandlers.handleSellItem(type);
                 }
                 break;
             case 6:

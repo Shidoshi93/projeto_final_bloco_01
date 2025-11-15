@@ -53,4 +53,8 @@ export class UserRepository implements UserInterface {
         user.setEndereco(endereco);
         return true;
     }
+
+    public getUserByUsername(username: string): User | null {
+        return this.users.find(u => u.getUsername() === username) || null;
+    }
 }

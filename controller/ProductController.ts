@@ -1,51 +1,42 @@
+import { Bike } from "../model/BIke";
 import { ProductService } from "../service/ProductService";
-import { ProductInput, ProductOutput } from "../types/Product";
+import { ProductOutput } from "../types/Product";
 
 export class ProductController {
     private productService: ProductService;
-    private readonly VALID_TYPES = ['mtb', 'road', 'elétrica', 'eletrica', 'electronics'];
+    private readonly VALID_TYPES = ['mountain', 'road', 'electric'];
 
     constructor(productService: ProductService) {
         this.productService = productService;
     }
 
-    public createProduct(data: any): { success: boolean; message: string } {
+    public createProduct(data: Bike): { success: boolean; message: string } {
         if (!data) {
             return { success: false, message: "Product data is required." };
         }
 
-        if (!data.name || !data.description || !data.price || !data.quantity || !data.userId || !data.type) {
+        if (!data.getName || !data.getDescription || !data.getPrice || !data.getQuantity || !data.getUserId || !data.getType) {
             return { success: false, message: "All fields are required: name, description, price, quantity, userId, type." };
         }
 
-        if (data.name.length < 2) {
+        if (data.getName().length < 2) {
             return { success: false, message: "Product name must have at least 2 characters." };
         }
 
-        if (data.price <= 0) {
+        if (data.getPrice() <= 0) {
             return { success: false, message: "Price must be greater than 0." };
         }
 
-        if (data.quantity < 0) {
+        if (data.getQuantity() < 0) {
             return { success: false, message: "Quantity cannot be negative." };
         }
 
-        if (!this.VALID_TYPES.includes(data.type.toLowerCase())) {
+        if (!this.VALID_TYPES.includes(data.getType().toLowerCase())) {
             return { success: false, message: `Type must be one of: ${this.VALID_TYPES.join(', ')}` };
         }
 
         try {
-            const productData: ProductOutput = {
-                id: 0,
-                name: data.name.trim(),
-                description: data.description.trim(),
-                price: parseFloat(data.price),
-                quantity: parseInt(data.quantity),
-                userId: parseInt(data.userId),
-                type: data.type.toLowerCase()
-            };
-
-            this.productService.addProduct(productData);
+            this.productService.addProduct(data);
             return { success: true, message: "Product created successfully." };
 
         } catch (error) {
@@ -65,7 +56,17 @@ export class ProductController {
                 return { success: false, message: "Product not found." };
             }
 
-            return { success: true, message: "Product found.", product: product };
+            const productOutput: ProductOutput = {
+                id: product.getId(),
+                name: product.getName(),
+                description: product.getDescription(),
+                price: product.getPrice(),
+                quantity: product.getQuantity(),
+                type: product.getType(),
+                userId: product.getUserId()
+            };
+
+            return { success: true, message: "Product found.", product: productOutput };
 
         } catch (error) {
             return { success: false, message: "Error retrieving product." };
@@ -87,32 +88,7 @@ export class ProductController {
                 return { success: false, message: "Product not found." };
             }
 
-            if (data.name && data.name.length < 2) {
-                return { success: false, message: "Name must have at least 2 characters." };
-            }
-
-            if (data.price && data.price <= 0) {
-                return { success: false, message: "Price must be greater than 0." };
-            }
-
-            if (data.quantity && data.quantity < 0) {
-                return { success: false, message: "Quantity cannot be negative." };
-            }
-
-            if (data.type && !this.VALID_TYPES.includes(data.type.toLowerCase())) {
-                return { success: false, message: `Type must be one of: ${this.VALID_TYPES.join(', ')}` };
-            }
-
-            const updateData: ProductOutput = { ...existingProduct, id: id };
-
-            if (data.name) updateData.name = data.name.trim();
-            if (data.description) updateData.description = data.description.trim();
-            if (data.price) updateData.price = parseFloat(data.price);
-            if (data.quantity !== undefined) updateData.quantity = parseInt(data.quantity);
-            if (data.type) updateData.type = data.type.toLowerCase();
-            if (data.userId) updateData.userId = parseInt(data.userId);
-
-            this.productService.updateProduct(id, updateData);
+            this.productService.updateProduct(id, data);
             return { success: true, message: "Product updated successfully." };
 
         } catch (error) {
@@ -139,7 +115,7 @@ export class ProductController {
         }
     }
 
-    public listProducts(): { success: boolean; message: string; products: ProductOutput[] } {
+    public listProducts(): { success: boolean; message: string; products: Bike[] } {
         try {
             const products = this.productService.listAllProducts();
             return {

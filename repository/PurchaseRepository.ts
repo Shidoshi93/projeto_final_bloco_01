@@ -36,12 +36,12 @@ export class PurchaseRepository implements PurchaseInterface {
         const purchase: Purchase = {
             id: this.nextPurchaseId++,
             productId: productId,
-            productName: product.name,
+            productName: product.getName(),
             quantity: quantity,
-            unitPrice: product.price,
+            unitPrice: product.getPrice(),
             totalPrice: totalPrice,
             buyerUsername: buyerUsername,
-            sellerUserId: product.userId,
+            sellerUserId: product.getUserId(),
             paymentMethod: paymentMethod,
             shippingAddress: shippingAddress,
             deliveryType: deliveryType,
@@ -51,8 +51,8 @@ export class PurchaseRepository implements PurchaseInterface {
 
         this.purchases.push(purchase);
 
-        const updatedProduct = { ...product, quantity: product.quantity - quantity };
-        this.productRepository.updateProduct(productId, updatedProduct);
+        product.setQuantity(product.getQuantity() - quantity);
+        this.productRepository.updateProduct(productId, product);
 
         return true;
     }
@@ -64,8 +64,8 @@ export class PurchaseRepository implements PurchaseInterface {
             return false;
         }
 
-        if (product.quantity < quantity) {
-            console.log(`Insufficient stock. Available: ${product.quantity}, Requested: ${quantity}`);
+        if (product.getQuantity() < quantity) {
+            console.log(`Insufficient stock. Available: ${product.getQuantity()}, Requested: ${quantity}`);
             return false;
         }
 
@@ -87,7 +87,7 @@ export class PurchaseRepository implements PurchaseInterface {
             return null;
         }
 
-        return product.price * quantity;
+        return product.getPrice() * quantity;
     }
 
     public getAllPurchases(): Purchase[] {

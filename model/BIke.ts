@@ -1,20 +1,20 @@
-import User from "../types/UserTypes";
-
 export abstract class Bike {
     private name: string;
     private description: string;
     private price: number;
     private quantity: number;
     private type: string;
-    private user: User | undefined;
+    private userId: number;
+    private id: number;
 
-    constructor(name: string, description: string, price: number, quantity: number, type: string, user?: User) {
+    constructor(name: string, description: string, price: number, quantity: number, type: string, userId: number) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.type = type;
-        this.user = user;
+        this.userId = userId;
+        this.id = Date.now();
     }
 
     public getName(): string {
@@ -57,12 +57,16 @@ export abstract class Bike {
         this.type = type;
     }
 
-    public getUser(): User | undefined {
-        return this.user;
+    public getUserId(): number {
+        return this.userId;
     }
 
-    public setUser(user: User): void {
-        this.user = user;
+    public setUserId(userId: number): void {
+        this.userId = userId;
+    }
+
+    public getId(): number {
+        return this.id;
     }
 
     public abstract getDetails(): string;

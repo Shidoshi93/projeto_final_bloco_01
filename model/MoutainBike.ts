@@ -10,10 +10,11 @@ export class MoutainBike extends Bike {
         price: number,
         quantity: number,
         type: string,
+        userId: number,
         suspensionType: string,
         frameMaterial: string
     ) {
-        super(name, description, price, quantity, type);
+        super(name, description, price, quantity, type, userId);
         this.suspensionType = suspensionType;
         this.frameMaterial = frameMaterial;
     }

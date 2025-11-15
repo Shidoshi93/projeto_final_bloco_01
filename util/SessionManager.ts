@@ -1,19 +1,41 @@
+import { UserRepository } from "../repository/UserRepository";
+
 export class SessionManager {
     private static currentUser: string | null = null;
     private static isLoggedIn: boolean = false;
+    private static currentUserId: number | null = null;
 
     public static login(username: string): void {
         SessionManager.currentUser = username;
         SessionManager.isLoggedIn = true;
+        // Busca o userId dinamicamente do repositório
+        SessionManager.currentUserId = SessionManager.findUserIdByUsername(username);
+    }
+
+    public static loginWithUserId(username: string, userId: number): void {
+        SessionManager.currentUser = username;
+        SessionManager.isLoggedIn = true;
+        SessionManager.currentUserId = userId;
     }
 
     public static logout(): void {
         SessionManager.currentUser = null;
         SessionManager.isLoggedIn = false;
+        SessionManager.currentUserId = null;
+    }
+
+    private static findUserIdByUsername(username: string): number | null {
+        const userRepository = new UserRepository();
+        const user = userRepository.getUserByUsername(username);
+        return user ? user.getId() : null;
     }
 
     public static getCurrentUser(): string | null {
         return SessionManager.currentUser;
+    }
+
+    public static getCurrentUserId(): number | null {
+        return SessionManager.currentUserId;
     }
 
     public static isUserLoggedIn(): boolean {

@@ -42,7 +42,7 @@ export class MenuHandlers {
         if (user) {
             const success = MenuHandlers.userController.register(user);
             if (success) {
-                SessionManager.login(user.getUsername());
+                SessionManager.loginWithUserId(user.getUsername(), user.getId());
                 console.log("User registered successfully!");
                 console.log("You have been automatically logged in!");
             } else {
@@ -120,8 +120,8 @@ export class MenuHandlers {
         }
     }
 
-    public static handleSellItem(): void {
-        const newProduct = ProductRegistrationForm.registerProduct();
+    public static handleSellItem(type: string): void {
+        const newProduct = ProductRegistrationForm.registerProduct(type);
         if (newProduct) {
             const result = MenuHandlers.productController.createProduct(newProduct);
             if (result.success) {

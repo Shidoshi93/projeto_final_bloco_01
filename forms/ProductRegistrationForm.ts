@@ -1,25 +1,29 @@
 import { question, questionInt, questionFloat, keyInSelect } from "readline-sync";
 import { ProductInput } from "../types/Product";
+import { Bike } from "../model/BIke";
+import { moutainBikeForm } from "./MoutainBikeForm";
+import { roadBikeForm } from "./RoadBikeForm";
+import { eletricBikeForm } from "./EletricBikeForm";
+import { SessionManager } from "../util/SessionManager";
 
 export class ProductRegistrationForm {
-    public static registerProduct(): ProductInput {
-        console.log("Register a New Product");
-
-        const name: string = question("Enter product name: ");
-        const description: string = question("Enter product description: ");
-        const price: number = questionFloat("Enter product price: ");
-        const quantity: number = questionInt("Enter product quantity: ");
-        const userId: number = questionInt("Enter user ID: ");
-
-        const newProduct: ProductInput = {
-            name,
-            description,
-            price,
-            quantity,
-            userId
-        };
-
-        console.log("Product registered successfully!");
-        return newProduct;
+    public static registerProduct(type: string): Bike {
+        const userId = SessionManager.getCurrentUserId();
+        if (userId === null) {
+            console.log("No user is currently logged in.");
+            throw new Error("User not logged in");
+        }
+        
+        if (type === "mountain") {
+            return moutainBikeForm(userId);
+        } else if (type === "road") {
+            return roadBikeForm(userId);
+        } else if (type === "electric") {
+            return eletricBikeForm(userId);
+        } else {
+            console.log("Invalid bike type selected.");
+            throw new Error("Invalid bike type");
+        }
+        
     }
 }

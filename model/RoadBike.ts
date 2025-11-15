@@ -10,10 +10,11 @@ export class RoadBike extends Bike {
         price: number,
         quantity: number,
         type: string,
+        userId: number,
         gearCount: number,
         frameMaterial: string
     ) {
-        super(name, description, price, quantity, type);
+        super(name, description, price, quantity, type, userId);
         this.gearCount = gearCount;
         this.frameMaterial = frameMaterial;
     }
